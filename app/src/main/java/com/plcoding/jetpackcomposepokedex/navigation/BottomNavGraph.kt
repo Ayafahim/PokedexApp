@@ -7,18 +7,15 @@ import androidx.navigation.compose.composable
 import com.plcoding.jetpackcomposepokedex.screens.BottomNavigationScreen
 
 @Composable
-fun HomeNavGraph(navController: NavHostController) {
+fun BottomNavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        route = MyGraph.HOME,
         startDestination = BottomNavigationScreen.Home.route
     ) {
-        composable(route = BottomNavigationScreen.Home.route) {
+        composable(route = BottomNavigationScreen.Home.route){
 
         }
-        composable(route = BottomNavigationScreen.Favorites.route) {
-
+        composable(route = BottomNavigationScreen.Favorites.route){
         }
-
     }
 }
