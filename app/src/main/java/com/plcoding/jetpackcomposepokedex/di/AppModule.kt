@@ -1,6 +1,11 @@
 package com.plcoding.jetpackcomposepokedex.di
 
+import android.app.Application
+import android.content.Context
+import androidx.room.Room
 import com.plcoding.jetpackcomposepokedex.data.remote.PokeApi
+import com.plcoding.jetpackcomposepokedex.db.AppDatabase
+import com.plcoding.jetpackcomposepokedex.db.PokemonDao
 import com.plcoding.jetpackcomposepokedex.repo.PokeRepo
 import com.plcoding.jetpackcomposepokedex.util.Constants.BASE_URL
 import dagger.Module
@@ -14,6 +19,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Singleton
+    @Provides
+    fun provideContext(application: Application): Context = application
 
     @Singleton
     @Provides
@@ -31,4 +40,18 @@ object AppModule {
             .build()
             .create(PokeApi::class.java)
     }
+
+    @Provides
+    fun providePokemonDao(database: AppDatabase): PokemonDao {
+        return database.pokemonDao()
+    }
+
+
+    @Provides
+    fun provideAppDatabase(context: Context): AppDatabase {
+        return AppDatabase.getDatabase(context)
+    }
+
+
+
 }

@@ -9,10 +9,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
@@ -21,6 +25,7 @@ import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -34,7 +39,7 @@ import androidx.navigation.compose.navigate
 import coil.request.ImageRequest
 import com.google.accompanist.coil.CoilImage
 import com.plcoding.jetpackcomposepokedex.R
-import com.plcoding.jetpackcomposepokedex.data.models.PokedexListEnty
+import com.plcoding.jetpackcomposepokedex.data.models.PokedexListEntry
 import com.plcoding.jetpackcomposepokedex.ui.theme.RobotoCondensed
 
 @Composable
@@ -48,13 +53,34 @@ fun PokeListScreen(
     ) {
         Column {
             Spacer(modifier = Modifier.height(20.dp))
-            Image(
-                painterResource(id = R.drawable.ic_international_pok_mon_logo),
-                contentDescription = "Pokemon",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(CenterHorizontally)
-            )
+            Row {
+                Box(modifier = Modifier
+                    .offset(40.dp,20.dp)
+                    .clickable {
+                        navController.navigate(
+                            "favorites"
+                        )
+                    }
+                ){
+                    Image(
+                        imageVector = Icons.Default.Favorite,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .align(Center)
+                            .size(30.dp),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
+
+                    )
+                }
+
+                Image(
+                    painterResource(id = R.drawable.ic_international_pok_mon_logo),
+                    contentDescription = "Pokemon",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(CenterVertically)
+                )
+            }
             SearchBar(
                 hint = "Search for a pokemon...",
                 modifier = Modifier
@@ -118,7 +144,7 @@ fun SearchBar(
 
 @Composable
 fun PokedexEntry(
-    entry: PokedexListEnty,
+    entry: PokedexListEntry,
     navController: NavController,
     modifier: Modifier = Modifier,
     viewModel: PokeListViewModel = hiltNavGraphViewModel()
@@ -224,7 +250,7 @@ fun PokeList(
 @Composable
 fun PokedexRow(
     rowIndex : Int,
-    entries: List<PokedexListEnty>,
+    entries: List<PokedexListEntry>,
     navController: NavController
 ) {
     Column {

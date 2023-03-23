@@ -1,15 +1,13 @@
 package com.plcoding.jetpackcomposepokedex.screens.pokeDetails
 
+import android.database.sqlite.SQLiteConstraintException
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
@@ -17,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -37,6 +34,9 @@ import com.plcoding.jetpackcomposepokedex.util.Resource
 import com.plcoding.jetpackcomposepokedex.util.parseStatToAbbr
 import com.plcoding.jetpackcomposepokedex.util.parseStatToColor
 import com.plcoding.jetpackcomposepokedex.util.parseTypeToColor
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.*
 import kotlin.math.round
 
@@ -152,7 +152,7 @@ fun PokeDetailStateWrap(
 ) {
     when (pokeInfo) {
         is Resource.Success -> {
-            PokeNameSection(
+            PokeCardSection(
                 pokeInfo = pokeInfo.data!!,
                 modifier = modifier
                     .offset(y = (-20).dp)
@@ -176,11 +176,12 @@ fun PokeDetailStateWrap(
 }
 
 @Composable
-fun PokeNameSection(
+fun PokeCardSection(
     pokeInfo: Pokemon,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
+    val favorites = remember { mutableStateOf(listOf<Pokemon>()) }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -198,8 +199,15 @@ fun PokeNameSection(
         PokeTypeSection(types = pokeInfo.types)
         PokeMeasurementsSection(pokeWeight = pokeInfo.weight, pokeHeight = pokeInfo.height)
         PokemonBaseStats(pokeInfo = pokeInfo)
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AddFavoriteButton(pokeInfo)
+        }
+
     }
-    
+
 }
 
 @Composable
@@ -302,7 +310,7 @@ fun PokemonStat(
         mutableStateOf(false)
     }
     val curPercent = animateFloatAsState(
-        targetValue = if(animationPlayed) {
+        targetValue = if (animationPlayed) {
             statValue / statMaxValue.toFloat()
         } else 0f,
         animationSpec = tween(
@@ -366,7 +374,7 @@ fun PokemonBaseStats(
         )
         Spacer(modifier = Modifier.height(4.dp))
 
-        for(i in pokeInfo.stats.indices) {
+        for (i in pokeInfo.stats.indices) {
             val stat = pokeInfo.stats[i]
             PokemonStat(
                 statName = parseStatToAbbr(stat),
@@ -379,6 +387,63 @@ fun PokemonBaseStats(
         }
     }
 }
+
+
+@Composable
+fun AddFavoriteButton(pokemon: Pokemon) {
+    // Create a state for tracking whether the button is pressed or not
+    val isPressed = remember { mutableStateOf(false) }
+    val pokeDetailViewModel: PokeDetailViewModel = hiltNavGraphViewModel()
+
+    // Create a coroutine scope for adding the pokemon to the database
+    val scope = rememberCoroutineScope()
+    val addPokemonJob = remember { mutableStateOf<Job?>(null) }
+
+    pokeDetailViewModel.favoritePokemons.value?.let {
+        isPressed.value = it.any { it.id == pokemon.id }
+    }
+
+    // Check if the pokemon already exists in the favorites list
+    val isFavorite = runBlocking { pokeDetailViewModel.isPokemonInFavorites(pokemon.id) }
+    isPressed.value = isFavorite
+
+    // Render the button
+    Button(
+        onClick = {
+            if (isPressed.value) {
+                addPokemonJob.value = scope.launch {
+                    pokeDetailViewModel.deletePokemon(pokemon.id)
+                    isPressed.value = false
+                }
+            } else {
+                addPokemonJob.value = scope.launch {
+                    try {
+                        pokeDetailViewModel.savePokemon(pokemon)
+                        isPressed.value = true
+                    } catch (e: Exception) {
+                        if (e is SQLiteConstraintException) {
+                            println("Pokemon already exists in favorites")
+                            return@launch
+                        } else {
+                            throw e
+                        }
+                    }
+                }
+            }
+        }
+    ) {
+        Text(if (isPressed.value) "Remove from favorites" else "Add to favorites")
+    }
+}
+
+
+
+
+
+
+
+
+
 
 
 

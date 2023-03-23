@@ -8,15 +8,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.palette.graphics.Palette
-import com.plcoding.jetpackcomposepokedex.data.models.PokedexListEnty
-import com.plcoding.jetpackcomposepokedex.data.remote.responses.PokemonList
+import com.plcoding.jetpackcomposepokedex.data.models.PokedexListEntry
 import com.plcoding.jetpackcomposepokedex.repo.PokeRepo
 import com.plcoding.jetpackcomposepokedex.util.Constants.PAGE_SIZE
 import com.plcoding.jetpackcomposepokedex.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.http.Query
 import java.util.*
 import javax.inject.Inject
 
@@ -27,12 +25,12 @@ class PokeListViewModel @Inject constructor(
 
     private var currentPage = 0
 
-    var pokeList = mutableStateOf<List<PokedexListEnty>>(listOf())
+    var pokeList = mutableStateOf<List<PokedexListEntry>>(listOf())
     var loadError = mutableStateOf(" ")
     var isLoading = mutableStateOf(false)
     var endReached = mutableStateOf(false)
 
-    private var  cachePokeList = listOf<PokedexListEnty>()
+    private var  cachePokeList = listOf<PokedexListEntry>()
     private var isSearchStarting = true
     var isSearching = mutableStateOf(false)
 
@@ -79,7 +77,7 @@ class PokeListViewModel @Inject constructor(
                             entry.url.takeLastWhile { it.isDigit() }
                         }
                         val url = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${number}.png"
-                        PokedexListEnty(entry.name.capitalize(Locale.ROOT),url,number.toInt())
+                        PokedexListEntry(entry.name.capitalize(Locale.ROOT),url,number.toInt())
                     }
                     currentPage++
 
