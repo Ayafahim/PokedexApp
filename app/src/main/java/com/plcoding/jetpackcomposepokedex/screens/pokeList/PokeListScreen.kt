@@ -11,9 +11,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -67,7 +65,7 @@ fun PokeListScreen(
                         contentDescription = null,
                         modifier = Modifier
                             .align(Center)
-                            .size(30.dp),
+                            .size(35.dp),
                         colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
 
                     )
@@ -87,7 +85,7 @@ fun PokeListScreen(
                     .fillMaxWidth()
                     .padding(16.dp)
             ){
-                viewModel.SeachList(it)
+                viewModel.SearchList(it)
             }
             Spacer(modifier = Modifier.height(16.dp))
             PokeList(navController = navController)

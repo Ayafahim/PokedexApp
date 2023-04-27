@@ -2,14 +2,11 @@ package com.plcoding.jetpackcomposepokedex.screens.pokeDetails
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.room.Query
 import com.plcoding.jetpackcomposepokedex.data.remote.responses.Pokemon
 import com.plcoding.jetpackcomposepokedex.db.PokemonDao
 import com.plcoding.jetpackcomposepokedex.repo.PokeRepo
 import com.plcoding.jetpackcomposepokedex.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,8 +33,13 @@ class PokeDetailViewModel @Inject constructor(
         favoritePokemons.postValue(pokemonDao.getAllPokemons().value)
     }
 
-    suspend fun isPokemonInFavorites(pokemonId: Int): Boolean {
-        return pokemonDao.isPokemonInFavorites(pokemonId) != null
+    suspend fun isPokemonSaved(pokemonId: Int): Boolean {
+        return pokemonDao.isPokemonSaved(pokemonId) != null
     }
+
+    suspend fun getNumberOfPokemonsSaved(): Int {
+        return pokemonDao.getAmountOfPokemonsSaved()
+    }
+
 
 }

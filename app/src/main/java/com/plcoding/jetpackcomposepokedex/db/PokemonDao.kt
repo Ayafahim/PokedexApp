@@ -20,6 +20,9 @@ interface PokemonDao {
     suspend fun deletePokemon(id: Int)
 
     @Query("SELECT id FROM pokemon WHERE id = :pokemonId")
-    suspend fun isPokemonInFavorites(pokemonId: Int): Int?
+    suspend fun isPokemonSaved(pokemonId: Int): Int?
+
+    @Query("SELECT COUNT(id) FROM pokemon")
+    suspend fun getAmountOfPokemonsSaved(): Int
 
 }

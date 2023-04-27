@@ -38,7 +38,7 @@ class PokeListViewModel @Inject constructor(
         loadPaginatedPokemon()
     }
 
-    fun SeachList(search: String){
+    fun SearchList(search: String){
         val listToSearch = if(isSearchStarting){
             pokeList.value
         }else{
@@ -62,6 +62,7 @@ class PokeListViewModel @Inject constructor(
             isSearching.value = true
         }
     }
+
 
     fun loadPaginatedPokemon(){
         isLoading.value = true
@@ -92,7 +93,6 @@ class PokeListViewModel @Inject constructor(
             }
         }
     }
-
     fun calcBCColor(drawable: Drawable, onFinish: (Color) -> Unit){
         val bmp = (drawable as BitmapDrawable).bitmap.copy(Bitmap.Config.ARGB_8888, true)
         Palette.from(bmp).generate{ palette ->
