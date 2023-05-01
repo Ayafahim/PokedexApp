@@ -10,7 +10,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
-import com.plcoding.jetpackcomposepokedex.screens.favorites.FavoritesScreen
+import com.plcoding.jetpackcomposepokedex.screens.favorites.ProfileScreen
+import com.plcoding.jetpackcomposepokedex.screens.pokeDetails.CatchPokemonGameScreen
 import com.plcoding.jetpackcomposepokedex.screens.pokeDetails.PokeDetailScreen
 import com.plcoding.jetpackcomposepokedex.screens.pokeList.PokeListScreen
 import com.plcoding.jetpackcomposepokedex.ui.theme.JetpackComposePokedexTheme
@@ -52,8 +53,28 @@ class MainActivity : ComponentActivity() {
                             navController = navController
                         )
                     }
-                    composable(route = "favorites") {
-                        FavoritesScreen(navController = navController)
+                    composable(route = "pokemon_game/{dominantColor}/{pokemonName}",
+                        arguments = listOf(
+                        navArgument("dominantColor") {
+                            type = NavType.IntType
+                        },
+                        navArgument("pokemonName") {
+                            type = NavType.StringType
+                        })) {
+                        val dominantColor = remember {
+                            val color = it.arguments?.getInt("dominantColor")
+                            color?.let { Color(it) ?: Color.White }
+                        }
+                        val pokemonName = remember {
+                            it.arguments?.getString("pokemonName")
+                        }
+                        CatchPokemonGameScreen(
+                            navController = navController,
+                            pokeName = pokemonName?.toLowerCase(Locale.ROOT) ?: "",
+                            dominantColor = dominantColor!!)
+                    }
+                    composable(route = "profile"){
+                        ProfileScreen(navController = navController)
                     }
 
 

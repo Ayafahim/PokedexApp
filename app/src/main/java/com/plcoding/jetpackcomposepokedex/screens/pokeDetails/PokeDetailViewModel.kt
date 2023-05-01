@@ -37,9 +37,22 @@ class PokeDetailViewModel @Inject constructor(
         return pokemonDao.isPokemonSaved(pokemonId) != null
     }
 
-    suspend fun getNumberOfPokemonsSaved(): Int {
+    suspend fun getNumberOfPokemonsCaught(): Int {
         return pokemonDao.getAmountOfPokemonsSaved()
     }
+
+    suspend fun getRandomPokemons(count: Int): List<Pokemon> {
+        val randomIds = (1..151).shuffled().take(count)
+        val pokemons = mutableListOf<Pokemon>()
+        for (id in randomIds) {
+            val result = repo.getPokeInfo(id.toString())
+            if (result is Resource.Success) {
+                pokemons.add(result.data!!)
+            }
+        }
+        return pokemons
+    }
+
 
 
 }

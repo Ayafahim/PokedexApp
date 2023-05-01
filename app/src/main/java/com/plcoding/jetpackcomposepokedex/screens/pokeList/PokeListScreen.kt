@@ -29,11 +29,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import coil.request.ImageRequest
 import com.google.accompanist.coil.CoilImage
 import com.plcoding.jetpackcomposepokedex.R
@@ -56,7 +58,7 @@ fun PokeListScreen(
                     .offset(40.dp,20.dp)
                     .clickable {
                         navController.navigate(
-                            "favorites"
+                            "profile"
                         )
                     }
                 ){
@@ -290,4 +292,10 @@ fun RetryLoading(
         }
     }
 
+}
+
+@Preview
+@Composable
+fun preview () {
+    PokeListScreen(rememberNavController())
 }
