@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -63,7 +64,7 @@ fun PokeListScreen(
                     }
                 ){
                     Image(
-                        imageVector = Icons.Default.Favorite,
+                        imageVector = Icons.Default.Person,
                         contentDescription = null,
                         modifier = Modifier
                             .align(Center)
@@ -79,6 +80,7 @@ fun PokeListScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(CenterVertically)
+                        .offset(x = -(20).dp)
                 )
             }
             SearchBar(

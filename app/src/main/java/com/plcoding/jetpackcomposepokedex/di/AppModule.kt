@@ -2,9 +2,11 @@ package com.plcoding.jetpackcomposepokedex.di
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
 import com.plcoding.jetpackcomposepokedex.data.remote.PokeApi
 import com.plcoding.jetpackcomposepokedex.db.AppDatabase
+import com.plcoding.jetpackcomposepokedex.db.PokeBallDao
 import com.plcoding.jetpackcomposepokedex.db.PokemonDao
 import com.plcoding.jetpackcomposepokedex.repo.PokeRepo
 import com.plcoding.jetpackcomposepokedex.util.Constants.BASE_URL
@@ -46,11 +48,19 @@ object AppModule {
         return database.pokemonDao()
     }
 
+    @Provides
+    fun providePokeBallDao(database: AppDatabase): PokeBallDao {
+        return database.pokeBallDao()
+    }
+
 
     @Provides
     fun provideAppDatabase(context: Context): AppDatabase {
+        Log.d("AppDatabase", "provideAppDatabase() called")
         return AppDatabase.getDatabase(context)
     }
+
+
 
 
 

@@ -2,7 +2,10 @@ package com.plcoding.jetpackcomposepokedex.screens.pokeDetails
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.room.Transaction
+import com.plcoding.jetpackcomposepokedex.data.models.PokeBall
 import com.plcoding.jetpackcomposepokedex.data.remote.responses.Pokemon
+import com.plcoding.jetpackcomposepokedex.db.PokeBallDao
 import com.plcoding.jetpackcomposepokedex.db.PokemonDao
 import com.plcoding.jetpackcomposepokedex.repo.PokeRepo
 import com.plcoding.jetpackcomposepokedex.util.Resource
@@ -12,10 +15,12 @@ import javax.inject.Inject
 @HiltViewModel
 class PokeDetailViewModel @Inject constructor(
     private val repo: PokeRepo,
-    private val pokemonDao: PokemonDao
+    private val pokemonDao: PokemonDao,
+    private val pokeBallDao: PokeBallDao
 ) : ViewModel() {
 
-    val favoritePokemons = MutableLiveData<List<Pokemon>>()
+    val caughtPokemons = MutableLiveData<List<Pokemon>>()
+
 
 
     suspend fun getPokeInfo(pokeName: String): Resource<Pokemon>{
@@ -25,12 +30,12 @@ class PokeDetailViewModel @Inject constructor(
 
     suspend fun savePokemon(pokemon: Pokemon) {
         pokemonDao.insertPokemon(pokemon)
-        favoritePokemons.postValue(pokemonDao.getAllPokemons().value)
+        caughtPokemons.postValue(pokemonDao.getAllPokemons().value)
     }
 
     suspend fun deletePokemon(pokemonId: Int) {
         pokemonDao.deletePokemon(pokemonId)
-        favoritePokemons.postValue(pokemonDao.getAllPokemons().value)
+        caughtPokemons.postValue(pokemonDao.getAllPokemons().value)
     }
 
     suspend fun isPokemonSaved(pokemonId: Int): Boolean {
@@ -51,6 +56,32 @@ class PokeDetailViewModel @Inject constructor(
             }
         }
         return pokemons
+    }
+
+    suspend fun addPokeBalls(pokeBall: PokeBall) {
+        pokeBallDao.insert(pokeBall)
+    }
+
+    private suspend fun update(pokeBall: PokeBall) {
+        pokeBallDao.update(pokeBall)
+    }
+
+    suspend fun getAllPokeBalls(): List<PokeBall> {
+        return pokeBallDao.getAll()
+    }
+
+    suspend fun getTotalPokeBallCount(): Int {
+        return pokeBallDao.getTotalCount()
+    }
+
+    // Subtract `count` from the current PokeBall count
+    @Transaction
+    suspend fun subtractPokeBalls(count: Int) {
+        val pokeBall = pokeBallDao.getById(1) // Fetch the PokeBall object with the fixed ID
+        if (pokeBall != null) {
+            pokeBall.count -= count
+            update(pokeBall)
+        }
     }
 
 
