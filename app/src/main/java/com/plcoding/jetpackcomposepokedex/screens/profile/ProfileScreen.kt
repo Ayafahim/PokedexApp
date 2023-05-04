@@ -1,8 +1,7 @@
-package com.plcoding.jetpackcomposepokedex.screens.favorites
+package com.plcoding.jetpackcomposepokedex.screens.profile
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Shader
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -20,7 +19,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
@@ -52,7 +50,6 @@ import com.plcoding.jetpackcomposepokedex.data.remote.responses.Pokemon
 import com.plcoding.jetpackcomposepokedex.screens.pokeList.PokeListViewModel
 import com.plcoding.jetpackcomposepokedex.ui.theme.RobotoCondensed
 import kotlinx.coroutines.runBlocking
-import nl.dionsegijn.konfetti.models.Shape
 
 @Composable
 fun ProfileScreen(navController: NavController) {
@@ -62,12 +59,12 @@ fun ProfileScreen(navController: NavController) {
             MaterialTheme.colors.background,
             Color.White
         ),
-        start = Offset(0f, 0f), // Updated start Y-coordinate to 0f
+        start = Offset(0f, 0f),
         end = Offset(0f, Float.POSITIVE_INFINITY),
         tileMode = TileMode.Clamp
     )
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Center) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -76,10 +73,9 @@ fun ProfileScreen(navController: NavController) {
             TopSection(navController)
             Spacer(modifier = Modifier.height(10.dp))
             ProfilePic()
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             TrainerRank()
-            WinPokeBall()
-            Spacer(modifier = Modifier.height(5.dp))
+            PokeBallSection(navController)
             SavedPokemonsList(navController = navController)
         }
     }
@@ -98,7 +94,7 @@ fun TopSection(navController: NavController) {
     ) {
 
         Box(modifier = Modifier
-            .offset(-(65).dp,20.dp)
+            .offset(-(65).dp, 20.dp)
             .clickable {
                 navController.popBackStack()
             }
@@ -128,7 +124,7 @@ fun TopSection(navController: NavController) {
 }
 
 @Composable
-fun ProfilePic(viewModel: ProfileViewModel = hiltNavGraphViewModel()) {
+fun ProfilePic() {
     val defaultImageResource = R.drawable.ash
     val imageUri = remember { mutableStateOf<Uri?>(null) }
 
@@ -141,7 +137,7 @@ fun ProfilePic(viewModel: ProfileViewModel = hiltNavGraphViewModel()) {
             }
         }
 
-    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = CenterHorizontally) {
         Box {
             if (imageUri.value != null) {
                 CoilImage(
@@ -167,7 +163,7 @@ fun ProfilePic(viewModel: ProfileViewModel = hiltNavGraphViewModel()) {
                 )
             }
 
-            // Updated the IconButton
+
             Surface(
                 modifier = Modifier.align(Alignment.BottomEnd),
                 shape = CircleShape,
@@ -203,6 +199,8 @@ fun TrainerRank(viewModel: ProfileViewModel = hiltNavGraphViewModel()) {
     val rank = getRank(pokemonsCount)
     val prevRank = remember { mutableStateOf(rank) }
 
+
+
     if (prevRank.value != rank) {
         runBlocking {
             when (rank) {
@@ -213,6 +211,7 @@ fun TrainerRank(viewModel: ProfileViewModel = hiltNavGraphViewModel()) {
                 "C" -> viewModel.addPokeBalls(PokeBall(count = 2))
                 "B" -> viewModel.addPokeBalls(PokeBall(count = 3))
                 "A" -> viewModel.addPokeBalls(PokeBall(count = 5))
+
             }
         }
         prevRank.value = rank
@@ -298,11 +297,12 @@ private fun getRank(pokemonCount: Int): String {
 }
 
 @Composable
-fun WinPokeBall(viewModel: ProfileViewModel = hiltNavGraphViewModel()) {
+fun PokeBallSection(navController: NavController) {
 
     Column() {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Text(text = "Click on a pokeball to try and win more!",
+            Text(
+                text = "Click on a pokeball to try and win more!",
                 fontFamily = RobotoCondensed,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp,
@@ -310,88 +310,99 @@ fun WinPokeBall(viewModel: ProfileViewModel = hiltNavGraphViewModel()) {
                     .fillMaxWidth()
                     .padding(bottom = 10.dp),
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colors.secondary)
+                color = MaterialTheme.colors.secondary
+            )
         }
         Box(Modifier.fillMaxWidth()) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 10.dp, start = 10.dp),
-                horizontalArrangement = Arrangement.Center // Center the row contents
+                horizontalArrangement = Arrangement.Center
             ) {
                 Box() {
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = CenterHorizontally
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.pok__ball_icon_svg),
                             contentDescription = "pokeball",
                             modifier = Modifier
                                 .size(100.dp)
-                                .clickable {  }
+                                .clickable {
+                                    navController.navigate(route = "pokeball_game/${1}")
+                                }
                         )
-                        Text(text = "1 PokeBall",
+                        Text(
+                            text = "1 PokeBall",
                             fontFamily = RobotoCondensed,
                             fontWeight = FontWeight.Normal,
                             fontSize = 17.sp,
                             textAlign = TextAlign.Center,
-                            color = MaterialTheme.colors.secondary)
+                            color = MaterialTheme.colors.secondary
+                        )
                     }
                 }
 
-                Spacer(modifier = Modifier.width(20.dp)) // Adjust the width for desired spacing
+                Spacer(modifier = Modifier.width(20.dp))
 
                 Box() {
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = CenterHorizontally
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.pok__ball_icon_svg),
                             contentDescription = "pokeball",
                             modifier = Modifier
                                 .size(100.dp)
-                                .clickable {  }
+                                .clickable { navController.navigate(route = "pokeball_game/${3}") }
                         )
-                        Text(text = "3 PokeBalls",
+                        Text(
+                            text = "3 PokeBalls",
                             fontFamily = RobotoCondensed,
                             fontWeight = FontWeight.Normal,
                             fontSize = 17.sp,
                             textAlign = TextAlign.Center,
-                            color = MaterialTheme.colors.secondary)
+                            color = MaterialTheme.colors.secondary
+                        )
                     }
                 }
 
-                Spacer(modifier = Modifier.width(20.dp)) // Adjust the width for desired spacing
+                Spacer(modifier = Modifier.width(20.dp))
 
                 Box() {
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = CenterHorizontally
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.pok__ball_icon_svg),
                             contentDescription = "pokeball",
                             modifier = Modifier
                                 .size(100.dp)
-                                .clickable {  }
+                                .clickable { navController.navigate(route = "pokeball_game/${5}") }
                         )
-                        Text(text = "5 PokeBalls",
+                        Text(
+                            text = "5 PokeBalls",
                             fontFamily = RobotoCondensed,
                             fontWeight = FontWeight.Normal,
                             fontSize = 17.sp,
                             textAlign = TextAlign.Center,
-                            color = MaterialTheme.colors.secondary)
+                            color = MaterialTheme.colors.secondary
+                        )
                     }
                 }
             }
         }
     }
-
-
 }
 
 
+
 @Composable
-fun SavedPokemonsList(viewModel: ProfileViewModel = hiltNavGraphViewModel(),navController: NavController) {
+fun SavedPokemonsList(
+    viewModel: ProfileViewModel = hiltNavGraphViewModel(),
+    navController: NavController
+) {
     val savedPokemons = viewModel.getAllFavorites().collectAsState(emptyList())
 
     LazyRow(
@@ -406,7 +417,11 @@ fun SavedPokemonsList(viewModel: ProfileViewModel = hiltNavGraphViewModel(),navC
 
 
 @Composable
-fun SavedPokemonItem(pokemon: Pokemon, viewModel: PokeListViewModel = hiltNavGraphViewModel(), navController: NavController) {
+fun SavedPokemonItem(
+    pokemon: Pokemon,
+    viewModel: PokeListViewModel = hiltNavGraphViewModel(),
+    navController: NavController
+) {
 
     var dominantColor by remember {
         mutableStateOf(Color.Transparent)
@@ -439,9 +454,11 @@ fun SavedPokemonItem(pokemon: Pokemon, viewModel: PokeListViewModel = hiltNavGra
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.Transparent)
-                    .clickable {  navController.navigate(
-                        "pokemon_details/${dominantColor.toArgb()}/${pokemon.name}"
-                    ) }
+                    .clickable {
+                        navController.navigate(
+                            "pokemon_details/${dominantColor.toArgb()}/${pokemon.name}"
+                        )
+                    }
             ) {
                 CoilImage(
                     request = ImageRequest.Builder(LocalContext.current)
@@ -481,12 +498,6 @@ fun SavedPokemonItem(pokemon: Pokemon, viewModel: PokeListViewModel = hiltNavGra
     }
 }
 
-
-@Preview
-@Composable
-fun preview() {
-    ProfileScreen(rememberNavController())
-}
 
 
 

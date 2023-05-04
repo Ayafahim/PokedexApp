@@ -10,7 +10,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
-import com.plcoding.jetpackcomposepokedex.screens.favorites.ProfileScreen
+import com.plcoding.jetpackcomposepokedex.screens.winPokeball.WinPokeBallScreen
+import com.plcoding.jetpackcomposepokedex.screens.profile.ProfileScreen
 import com.plcoding.jetpackcomposepokedex.screens.pokeDetails.CatchPokemonGameScreen
 import com.plcoding.jetpackcomposepokedex.screens.pokeDetails.PokeDetailScreen
 import com.plcoding.jetpackcomposepokedex.screens.pokeList.PokeListScreen
@@ -53,14 +54,16 @@ class MainActivity : ComponentActivity() {
                             navController = navController
                         )
                     }
-                    composable(route = "pokemon_game/{dominantColor}/{pokemonName}",
+                    composable(
+                        route = "pokemon_game/{dominantColor}/{pokemonName}",
                         arguments = listOf(
-                        navArgument("dominantColor") {
-                            type = NavType.IntType
-                        },
-                        navArgument("pokemonName") {
-                            type = NavType.StringType
-                        })) {
+                            navArgument("dominantColor") {
+                                type = NavType.IntType
+                            },
+                            navArgument("pokemonName") {
+                                type = NavType.StringType
+                            })
+                    ) {
                         val dominantColor = remember {
                             val color = it.arguments?.getInt("dominantColor")
                             color?.let { Color(it) ?: Color.White }
@@ -71,10 +74,23 @@ class MainActivity : ComponentActivity() {
                         CatchPokemonGameScreen(
                             navController = navController,
                             pokeName = pokemonName?.toLowerCase(Locale.ROOT) ?: "",
-                            dominantColor = dominantColor!!)
+                            dominantColor = dominantColor!!
+                        )
                     }
-                    composable(route = "profile"){
+                    composable(route = "profile") {
                         ProfileScreen(navController = navController)
+                    }
+                    composable("pokeball_game/{gameLevel}",
+                        arguments = listOf(
+                            navArgument("gameLevel") {
+                                type = NavType.IntType
+                            }
+                        )
+                    ) {
+                        val gameLevel = remember {
+                            it.arguments?.getInt("gameLevel")
+                        }
+                        WinPokeBallScreen(gameLevel = gameLevel!!, navController)
                     }
 
 
@@ -83,3 +99,4 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+

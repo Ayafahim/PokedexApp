@@ -6,6 +6,9 @@ import com.plcoding.jetpackcomposepokedex.data.remote.responses.Stat
 import com.plcoding.jetpackcomposepokedex.ui.theme.*
 import java.util.*
 
+/*
+Found in https://github.com/philipplackner/JetpackComposePokedex/blob/Part9-PokemonDetailScreen3/app/src/main/java/com/plcoding/jetpackcomposepokedex/util/PokemonParse.kt
+ */
 fun parseTypeToColor(type: Type): Color {
     return when(type.type.name.toLowerCase(Locale.ROOT)) {
         "normal" -> TypeNormal

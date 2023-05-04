@@ -1,8 +1,9 @@
-package com.plcoding.jetpackcomposepokedex.screens.favorites
+package com.plcoding.jetpackcomposepokedex.screens.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import androidx.room.Transaction
 import com.plcoding.jetpackcomposepokedex.data.models.PokeBall
 import com.plcoding.jetpackcomposepokedex.data.remote.responses.Pokemon
 import com.plcoding.jetpackcomposepokedex.db.PokeBallDao
@@ -34,14 +35,6 @@ class ProfileViewModel @Inject constructor(
         pokeBallDao.insert(pokeBall)
     }
 
-    suspend fun removePokeBalls(pokeBall: PokeBall) {
-        pokeBallDao.update(pokeBall)
-    }
-
-    suspend fun getAllPokeBalls(): List<PokeBall> {
-        return pokeBallDao.getAll()
-    }
-
     suspend fun getTotalPokeBallCount(): Int {
         return pokeBallDao.getTotalCount()
     }
@@ -49,4 +42,5 @@ class ProfileViewModel @Inject constructor(
     suspend fun getNumberOfPokemonsCaught(): Int {
         return pokemonDao.getAmountOfPokemonsSaved()
     }
+
 }

@@ -36,16 +36,17 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+
+
         fun getDatabase(context: Context): AppDatabase {
             val migration_1_3 = object : Migration(1, 3) {
                 override fun migrate(database: SupportSQLiteDatabase) {
-                    // Perform any necessary schema changes here
+                   //Migration from 1st version of database
                     database.execSQL("CREATE TABLE IF NOT EXISTS `pokeballs` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `count` INTEGER NOT NULL)")
                     database.execSQL("INSERT INTO `pokeballs` (`count`) VALUES (5)")
                     database.execSQL("DELETE FROM `pokemon`")
                 }
             }
-            Log.d("AppDatabase", "getDatabase() called")
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
@@ -54,7 +55,6 @@ abstract class AppDatabase : RoomDatabase() {
                 )
 
                     .addMigrations(migration_1_3)
-                    .addCallback(callback)
                     .build()
                 INSTANCE = instance
                 instance

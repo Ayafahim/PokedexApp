@@ -56,7 +56,6 @@ object AppModule {
 
     @Provides
     fun provideAppDatabase(context: Context): AppDatabase {
-        Log.d("AppDatabase", "provideAppDatabase() called")
         return AppDatabase.getDatabase(context)
     }
 

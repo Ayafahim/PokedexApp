@@ -13,9 +13,6 @@ interface PokeBallDao {
     @Update
     suspend fun update(pokeBall: PokeBall)
 
-    @Query("SELECT * FROM pokeballs")
-    suspend fun getAll(): List<PokeBall>
-
     @Query("SELECT COALESCE(SUM(count), 0) FROM pokeballs")
     suspend fun getTotalCount(): Int
 

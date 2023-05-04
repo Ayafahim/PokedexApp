@@ -18,6 +18,10 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
+/*
+    ViewModel functions used in https://github.com/philipplackner/JetpackComposePokedex/blob/Part4-PokedexList/app/src/main/java/com/plcoding/jetpackcomposepokedex/pokemonlist/PokemonListViewModel.kt
+ */
+
 @HiltViewModel
 class PokeListViewModel @Inject constructor(
     private val repo: PokeRepo

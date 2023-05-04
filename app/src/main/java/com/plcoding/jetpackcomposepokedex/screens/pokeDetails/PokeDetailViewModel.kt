@@ -66,10 +66,6 @@ class PokeDetailViewModel @Inject constructor(
         pokeBallDao.update(pokeBall)
     }
 
-    suspend fun getAllPokeBalls(): List<PokeBall> {
-        return pokeBallDao.getAll()
-    }
-
     suspend fun getTotalPokeBallCount(): Int {
         return pokeBallDao.getTotalCount()
     }
@@ -77,7 +73,7 @@ class PokeDetailViewModel @Inject constructor(
     // Subtract `count` from the current PokeBall count
     @Transaction
     suspend fun subtractPokeBalls(count: Int) {
-        val pokeBall = pokeBallDao.getById(1) // Fetch the PokeBall object with the fixed ID
+        val pokeBall = pokeBallDao.getById(1)
         if (pokeBall != null) {
             pokeBall.count -= count
             update(pokeBall)

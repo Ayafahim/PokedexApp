@@ -43,6 +43,10 @@ import com.plcoding.jetpackcomposepokedex.R
 import com.plcoding.jetpackcomposepokedex.data.models.PokedexListEntry
 import com.plcoding.jetpackcomposepokedex.ui.theme.RobotoCondensed
 
+/*
+    UI found in https://github.com/philipplackner/JetpackComposePokedex/blob/Part4-PokedexList/app/src/main/java/com/plcoding/jetpackcomposepokedex/pokemonlist/PokemonListScreen.kt
+ */
+
 @Composable
 fun PokeListScreen(
     navController: NavController,

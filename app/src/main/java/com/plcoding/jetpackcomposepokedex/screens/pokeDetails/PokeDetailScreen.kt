@@ -1,8 +1,5 @@
 package com.plcoding.jetpackcomposepokedex.screens.pokeDetails
 
-import nl.dionsegijn.konfetti.KonfettiView
-import nl.dionsegijn.konfetti.models.Shape
-import nl.dionsegijn.konfetti.models.Size
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
@@ -30,7 +27,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
@@ -46,6 +42,11 @@ import com.plcoding.jetpackcomposepokedex.util.parseTypeToColor
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.math.round
+
+
+/*
+    Some code sections for UI of details is taken from  https://github.com/philipplackner/JetpackComposePokedex/blob/Part9-PokemonDetailScreen3/app/src/main/java/com/plcoding/jetpackcomposepokedex/pokemondetail/PokemonDetailScreen.kt
+ */
 
 @Composable
 fun PokeDetailScreen(
@@ -445,7 +446,7 @@ fun CatchPokemonButton(
             if (isPressed.value) {
                 addPokemonJob.value = scope.launch {
                     pokeDetailViewModel.deletePokemon(pokemon.id)
-                    pokeDetailViewModel.addPokeBalls(PokeBall(count =  1))
+                    pokeDetailViewModel.addPokeBalls(PokeBall(count = 1))
                     isPressed.value = false
                 }
             } else {
@@ -529,10 +530,6 @@ fun CatchPokemonGameScreen(
         startTimer = startTimer.value
     )
 
-
-
-
-
     val (selectedOption, onOptionSelected) = remember {
         mutableStateOf(
             if (radioOptions.isNotEmpty()) radioOptions[0] else ""
@@ -615,8 +612,11 @@ fun CatchPokemonGameScreen(
                                                         showSnackbar.value = true
                                                     }
                                                 } else {
-                                                    snackbarMessage.value = "Incorrect!"
-                                                    showSnackbar.value = true
+                                                    catchPokemonJob.value = scope.launch {
+                                                        snackbarMessage.value = "Incorrect!"
+                                                        showSnackbar.value = true
+                                                        viewModel.subtractPokeBalls(1)
+                                                    }
                                                 }
                                             }
                                         )
@@ -635,8 +635,11 @@ fun CatchPokemonGameScreen(
 
                                                 }
                                             } else {
-                                                snackbarMessage.value = "Incorrect!"
-                                                showSnackbar.value = true
+                                                catchPokemonJob.value = scope.launch {
+                                                    snackbarMessage.value = "Incorrect!"
+                                                    showSnackbar.value = true
+                                                    viewModel.subtractPokeBalls(1)
+                                                }
                                             }
                                         }
                                     )
